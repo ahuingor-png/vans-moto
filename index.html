@@ -75,8 +75,21 @@
 
             <div class="col-span-2">
                 <label class="block text-[9px] font-bold text-slate-500 mb-1 uppercase">Responsable</label>
-                <input type="text" id="in_resp" value="ABEL HUINGO"
-                    class="w-full bg-slate-50 border border-slate-300 p-2 rounded-lg text-xs uppercase outline-none">
+                <div class="flex gap-1">
+                    <select id="in_resp"
+                        class="flex-1 min-w-0 bg-slate-50 border border-slate-300 p-2 rounded-lg text-xs uppercase outline-none">
+                        <option value="ABEL ARTURO HUINGO RIMACHI" selected>ABEL ARTURO HUINGO RIMACHI</option>
+                        <option value="RENZO ZEVALLOS PEREZ">RENZO ZEVALLOS PEREZ</option>
+                        <option value="AMBERLY YAMILE CALDERON RODRIGUEZ">AMBERLY YAMILE CALDERON RODRIGUEZ</option>
+                        <option value="SELENE SALHIA DIPAZ VIDARTE">SELENE SALHIA DIPAZ VIDARTE</option>
+                        <option value="CHRISTOFER MARTIN RIOS MEDINA">CHRISTOFER MARTIN RIOS MEDINA</option>
+                        <option value="JHOSMAR ANTONIO AGUILAR VEGA">JHOSMAR ANTONIO AGUILAR VEGA</option>
+                    </select>
+                    <button onclick="pedirClave('agregar-responsable')" type="button" title="Agregar responsable"
+                        class="shrink-0 w-9 bg-emerald-100 text-emerald-700 rounded-lg font-bold border border-emerald-300">➕</button>
+                    <button onclick="pedirClave('eliminar-responsable')" type="button" title="Eliminar responsable seleccionado"
+                        class="shrink-0 w-9 bg-red-100 text-red-600 rounded-lg font-bold border border-red-300">🗑️</button>
+                </div>
             </div>
 
             <div>
@@ -88,30 +101,32 @@
             <div>
                 <label class="block text-[9px] font-bold text-slate-500 mb-1 uppercase">Transporte</label>
                 <div class="flex gap-1">
-                    <select id="in_trans_select" onchange="toggleTransporteManual()"
-                        class="flex-1 bg-slate-50 border border-slate-300 p-2 rounded-lg text-xs outline-none"></select>
+                    <div class="relative flex-1 min-w-0">
+                        <input type="text" id="in_trans_input" placeholder="Escribe para buscar..." autocomplete="off"
+                            class="w-full bg-slate-50 border border-slate-300 p-2 rounded-lg text-xs uppercase outline-none"
+                            oninput="buscarTransporte()" onfocus="buscarTransporte()" onblur="setTimeout(ocultarListaTransportes,150)">
+                        <input type="hidden" id="in_trans_select" value="">
+                        <div id="in_trans_lista"
+                            class="hidden absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-300 rounded-lg shadow-lg max-h-44 overflow-y-auto text-xs normal-case"></div>
+                    </div>
                     <button onclick="eliminarTransporteSeleccionado()" type="button" title="Eliminar transporte seleccionado"
-                        class="bg-red-100 text-red-600 px-2.5 rounded-lg font-bold border border-red-300">🗑️</button>
-                </div>
-                <div id="nuevoTransporteContainer" class="flex gap-1 mt-2 hidden">
-                    <input type="text" id="in_trans_manual" placeholder="Nuevo transporte"
-                        class="flex-1 bg-slate-50 border border-slate-300 p-2 rounded-lg text-xs uppercase outline-none">
-                    <button onclick="guardarNuevoTransporte()" type="button" class="bg-blue-600 text-white px-2.5 rounded-lg font-bold text-[8px] uppercase">+ Guardar</button>
+                        class="shrink-0 w-9 bg-red-100 text-red-600 rounded-lg font-bold border border-red-300">🗑️</button>
                 </div>
             </div>
 
             <div>
                 <label class="block text-[9px] font-bold text-slate-500 mb-1 uppercase">Placa</label>
                 <div class="flex gap-1">
-                    <select id="in_placa_select" onchange="togglePlacaManual()"
-                        class="flex-1 bg-slate-50 border border-slate-300 p-2 rounded-lg text-xs uppercase outline-none"></select>
+                    <div class="relative flex-1 min-w-0">
+                        <input type="text" id="in_placa_input" placeholder="Escribe para buscar..." autocomplete="off"
+                            class="w-full bg-slate-50 border border-slate-300 p-2 rounded-lg text-xs uppercase outline-none"
+                            oninput="buscarPlaca()" onfocus="buscarPlaca()" onblur="setTimeout(ocultarListaPlacas,150)">
+                        <input type="hidden" id="in_placa_select" value="">
+                        <div id="in_placa_lista"
+                            class="hidden absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-300 rounded-lg shadow-lg max-h-44 overflow-y-auto text-xs normal-case"></div>
+                    </div>
                     <button onclick="eliminarPlacaSeleccionada()" type="button" title="Eliminar placa seleccionada"
-                        class="bg-red-100 text-red-600 px-2.5 rounded-lg font-bold border border-red-300">🗑️</button>
-                </div>
-                <div id="nuevaPlacaContainer" class="flex gap-1 mt-2 hidden">
-                    <input type="text" id="in_placa_manual" placeholder="NUEVA PLACA"
-                        class="flex-1 bg-slate-50 border border-slate-300 p-2 rounded-lg text-xs uppercase outline-none">
-                    <button onclick="guardarNuevaPlaca()" type="button" class="bg-blue-600 text-white px-2.5 rounded-lg font-bold text-[8px] uppercase">+ Guardar</button>
+                        class="shrink-0 w-9 bg-red-100 text-red-600 rounded-lg font-bold border border-red-300">🗑️</button>
                 </div>
             </div>
 
@@ -156,6 +171,18 @@
 </div>
 
 <!-- MODAL HISTORIAL DE RECEPCIONES -->
+<div id="modalClave" class="fixed inset-0 z-[180] flex items-center justify-center bg-slate-900/90 hidden backdrop-blur-md p-3">
+    <div class="bg-white rounded-2xl p-5 w-full max-w-xs border border-slate-200 shadow-2xl">
+        <h3 class="text-xs font-black uppercase text-slate-700 tracking-widest mb-3">🔒 Clave requerida</h3>
+        <input type="password" id="in_clave_modal" placeholder="Ingresa la clave" autocomplete="off"
+            class="w-full bg-slate-50 border border-slate-300 p-2 rounded-lg text-xs outline-none mb-3">
+        <div class="flex gap-2">
+            <button id="btnClaveConfirmar" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-bold text-[9px] uppercase">Confirmar</button>
+            <button id="btnClaveCancelar" class="flex-1 bg-slate-100 text-slate-600 py-2 rounded-lg font-bold text-[9px] uppercase border border-slate-300">Cancelar</button>
+        </div>
+    </div>
+</div>
+
 <div id="modalHistorialRecepciones" class="fixed inset-0 z-[170] flex items-center justify-center bg-slate-900/90 hidden backdrop-blur-md p-3">
     <div class="bg-white rounded-2xl p-5 w-full max-w-4xl lg:max-w-5xl lg:p-7 flex flex-col max-h-[85vh] border border-slate-200 shadow-2xl">
         <div class="flex justify-between items-center mb-3">
@@ -202,7 +229,14 @@
     let transportesPersonalizados = JSON.parse(localStorage.getItem('transportes_personalizados') || '[]');
     let placasPersonalizadas = JSON.parse(localStorage.getItem('placas_personalizadas') || '[]');
     let transportesOcultos = JSON.parse(localStorage.getItem('transportes_ocultos') || '[]');
+    let responsablesPersonalizados = JSON.parse(localStorage.getItem('responsables_personalizados') || '[]');
+    let responsablesOcultos = JSON.parse(localStorage.getItem('responsables_ocultos') || '[]');
     const usuarioActivo = "RECEPCIÓN";
+
+    const responsablesDefault = [
+        "ABEL ARTURO HUINGO RIMACHI", "RENZO ZEVALLOS PEREZ", "AMBERLY YAMILE CALDERON RODRIGUEZ",
+        "SELENE SALHIA DIPAZ VIDARTE", "CHRISTOFER MARTIN RIOS MEDINA", "JHOSMAR ANTONIO AGUILAR VEGA"
+    ];
 
     const transportesDefault = [
         "Cabify Logistics", "CENTURY CARGO S.R.L.", "DLumi Logistics",
@@ -232,21 +266,152 @@
         transportesOcultos = Object.values(snapshot.val() || {});
         actualizarSelectTransportes();
     });
+    db.ref('responsables_personalizados').on('value', (snapshot) => {
+        responsablesPersonalizados = Object.keys(snapshot.val() || {}).map(id => ({ id, ...snapshot.val()[id] }));
+        actualizarSelectResponsables();
+    });
+    db.ref('responsables_ocultos').on('value', (snapshot) => {
+        responsablesOcultos = Object.values(snapshot.val() || {});
+        actualizarSelectResponsables();
+    });
+
+    function actualizarSelectResponsables() {
+        const select = document.getElementById('in_resp');
+        const actual = select.value;
+        let lista = [...new Set([...responsablesDefault, ...responsablesPersonalizados.map(r => r.nombre).filter(Boolean)])];
+        lista = lista.filter(r => !responsablesOcultos.includes(r));
+        let opciones = '';
+        lista.forEach(r => { opciones += `<option value="${escaparHtml(r)}">${escaparHtml(r)}</option>`; });
+        select.innerHTML = opciones;
+        if (lista.includes(actual)) select.value = actual;
+    }
+
+    function agregarResponsable() {
+        const nombre = prompt('Nombre del nuevo responsable:');
+        if (!nombre || !nombre.trim()) return;
+        const val = nombre.trim().toUpperCase();
+        db.ref('responsables_personalizados').push({ nombre: val });
+        setTimeout(() => { document.getElementById('in_resp').value = val; }, 300);
+    }
+
+    function eliminarResponsable() {
+        const select = document.getElementById('in_resp');
+        const val = select.value;
+        if (!val) return alert('Selecciona un responsable para eliminar');
+        if (!confirm(`¿Eliminar "${val}" de la lista de responsables?`)) return;
+        const personalizado = responsablesPersonalizados.find(r => r.nombre === val);
+        if (personalizado) {
+            db.ref('responsables_personalizados/' + personalizado.id).remove();
+        } else {
+            db.ref('responsables_ocultos').push(val);
+        }
+    }
+
+    // --- Protección con clave para agregar/eliminar responsables ---
+    const CLAVE_ADMIN_RESPONSABLES = '@lepus2211';
+    let accionPendienteClave = null;
+
+    function pedirClave(accion) {
+        accionPendienteClave = accion;
+        const input = document.getElementById('in_clave_modal');
+        input.value = '';
+        document.getElementById('modalClave').classList.remove('hidden');
+        setTimeout(() => input.focus(), 50);
+    }
+
+    function cerrarModalClave() {
+        document.getElementById('modalClave').classList.add('hidden');
+        accionPendienteClave = null;
+    }
+
+    function confirmarClave() {
+        const clave = document.getElementById('in_clave_modal').value;
+        if (clave !== CLAVE_ADMIN_RESPONSABLES) {
+            alert('Clave incorrecta');
+            return;
+        }
+        const accion = accionPendienteClave;
+        cerrarModalClave();
+        if (accion === 'agregar-responsable') agregarResponsable();
+        else if (accion === 'eliminar-responsable') eliminarResponsable();
+    }
+
+    document.getElementById('btnClaveConfirmar').onclick = confirmarClave;
+    document.getElementById('btnClaveCancelar').onclick = cerrarModalClave;
+    document.getElementById('in_clave_modal').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') confirmarClave();
+    });
+
+    let transportesListaCompleta = [];
 
     function actualizarSelectTransportes() {
-        const select = document.getElementById('in_trans_select');
         let lista = [...new Set([...transportesDefault, ...transportesPersonalizados.map(t => t.nombre).filter(Boolean)])];
         lista = lista.filter(t => !transportesOcultos.includes(t));
-        let opciones = `<option value="">-- Selecciona Transporte --</option>`;
-        lista.forEach(t => { opciones += `<option value="${t}" ${t === "G2cnet S.A.C." ? "selected" : ""}>${t}</option>`; });
-        opciones += `<option value="OTRO">-- OTRO / NUEVO --</option>`;
-        select.innerHTML = opciones;
+        transportesListaCompleta = lista;
+        const hidden = document.getElementById('in_trans_select');
+        const input = document.getElementById('in_trans_input');
+        if (!hidden.value) {
+            const def = lista.includes('G2cnet S.A.C.') ? 'G2cnet S.A.C.' : (lista[0] || '');
+            hidden.value = def;
+            input.value = def;
+        }
+    }
+
+    function escaparHtml(txt) {
+        return String(txt).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function buscarTransporte() {
+        const texto = document.getElementById('in_trans_input').value.trim();
+        const q = texto.toLowerCase();
+        const lista = document.getElementById('in_trans_lista');
+        const filtrados = transportesListaCompleta.filter(t => t.toLowerCase().includes(q));
+        let html = '';
+        filtrados.forEach(t => {
+            html += `<div class="px-2 py-1.5 hover:bg-blue-50 cursor-pointer" data-accion="elegir-transporte" data-valor="${escaparHtml(t)}">${escaparHtml(t)}</div>`;
+        });
+        const existeExacto = transportesListaCompleta.some(t => t.toLowerCase() === q);
+        if (texto && !existeExacto) {
+            html += `<div class="px-2 py-1.5 bg-blue-50 text-blue-700 font-bold cursor-pointer border-t border-slate-200" data-accion="nuevo-transporte">+ Agregar "${escaparHtml(texto.toUpperCase())}"</div>`;
+        }
+        if (!html) html = `<div class="px-2 py-1.5 text-slate-400">Sin resultados</div>`;
+        lista.innerHTML = html;
+        lista.classList.remove('hidden');
+    }
+
+    document.getElementById('in_trans_lista').addEventListener('mousedown', (e) => {
+        const item = e.target.closest('[data-accion]');
+        if (!item) return;
+        e.preventDefault();
+        if (item.dataset.accion === 'elegir-transporte') {
+            seleccionarTransporte(item.dataset.valor);
+        } else if (item.dataset.accion === 'nuevo-transporte') {
+            guardarNuevoTransporteDesdeTexto();
+        }
+    });
+
+    function seleccionarTransporte(nombre) {
+        document.getElementById('in_trans_input').value = nombre;
+        document.getElementById('in_trans_select').value = nombre;
+        ocultarListaTransportes();
+    }
+
+    function ocultarListaTransportes() {
+        document.getElementById('in_trans_lista').classList.add('hidden');
+    }
+
+    function guardarNuevoTransporteDesdeTexto() {
+        const val = document.getElementById('in_trans_input').value.trim().toUpperCase();
+        if (!val) return;
+        db.ref('transportes_personalizados').push({ nombre: val });
+        document.getElementById('in_trans_input').value = val;
+        document.getElementById('in_trans_select').value = val;
+        ocultarListaTransportes();
     }
 
     function eliminarTransporteSeleccionado() {
-        const select = document.getElementById('in_trans_select');
-        const val = select.value;
-        if (!val || val === 'OTRO') return alert('Selecciona un transporte para eliminar');
+        const val = document.getElementById('in_trans_select').value;
+        if (!val) return alert('Escribe o selecciona un transporte para eliminar');
         if (!confirm(`¿Eliminar "${val}" de la lista de transportes?`)) return;
         const personalizado = transportesPersonalizados.find(t => t.nombre === val);
         if (personalizado) {
@@ -254,52 +419,74 @@
         } else {
             db.ref('transportes_ocultos').push(val);
         }
-    }
-
-    function eliminarPlacaSeleccionada() {
-        const select = document.getElementById('in_placa_select');
-        const opt = select.options[select.selectedIndex];
-        if (!opt || !opt.dataset.id) return alert('Selecciona una placa para eliminar');
-        if (!confirm(`¿Eliminar la placa "${opt.textContent}" de la lista?`)) return;
-        db.ref('placas_personalizadas/' + opt.dataset.id).remove();
-    }
-
-    function guardarNuevoTransporte() {
-        const val = document.getElementById('in_trans_manual').value.trim().toUpperCase();
-        if (!val) return alert('Escribe el transporte');
-        db.ref('transportes_personalizados').push({ nombre: val });
-        document.getElementById('in_trans_select').value = val;
-        document.getElementById('in_trans_manual').value = '';
-        document.getElementById('nuevoTransporteContainer').classList.add('hidden');
+        document.getElementById('in_trans_input').value = '';
+        document.getElementById('in_trans_select').value = '';
     }
 
     function actualizarSelectPlacas() {
-        const select = document.getElementById('in_placa_select');
-        let opciones = `<option value="">-- Selecciona Placa --</option>`;
-        placasPersonalizadas.forEach(p => {
-            const texto = p.placa ? p.placa : '(sin nombre) — tocar 🗑️ para borrar';
-            opciones += `<option value="${p.placa || ''}" data-id="${p.id}">${texto}</option>`;
+        // La lista vive en placasPersonalizadas; el buscador la filtra en vivo (ver buscarPlaca).
+    }
+
+    function buscarPlaca() {
+        const texto = document.getElementById('in_placa_input').value.trim();
+        const q = texto.toLowerCase();
+        const lista = document.getElementById('in_placa_lista');
+        const filtradas = placasPersonalizadas.filter(p => (p.placa || '').toLowerCase().includes(q));
+        let html = '';
+        filtradas.forEach(p => {
+            const texto2 = p.placa ? p.placa : '(sin nombre)';
+            html += `<div class="px-2 py-1.5 hover:bg-blue-50 cursor-pointer" data-accion="elegir-placa" data-valor="${escaparHtml(p.placa || '')}" data-id="${escaparHtml(p.id)}">${escaparHtml(texto2)}</div>`;
         });
-        opciones += `<option value="OTRO">-- NUEVA PLACA --</option>`;
-        select.innerHTML = opciones;
+        const existeExacta = placasPersonalizadas.some(p => (p.placa || '').toLowerCase() === q);
+        if (texto && !existeExacta) {
+            html += `<div class="px-2 py-1.5 bg-blue-50 text-blue-700 font-bold cursor-pointer border-t border-slate-200" data-accion="nueva-placa">+ Agregar placa "${escaparHtml(texto.toUpperCase())}"</div>`;
+        }
+        if (!html) html = `<div class="px-2 py-1.5 text-slate-400">Sin resultados</div>`;
+        lista.innerHTML = html;
+        lista.classList.remove('hidden');
     }
 
-    function guardarNuevaPlaca() {
-        const val = document.getElementById('in_placa_manual').value.trim().toUpperCase();
-        if (!val) return alert('Escribe la placa');
+    document.getElementById('in_placa_lista').addEventListener('mousedown', (e) => {
+        const item = e.target.closest('[data-accion]');
+        if (!item) return;
+        e.preventDefault();
+        if (item.dataset.accion === 'elegir-placa') {
+            seleccionarPlaca(item.dataset.valor, item.dataset.id);
+        } else if (item.dataset.accion === 'nueva-placa') {
+            guardarNuevaPlacaDesdeTexto();
+        }
+    });
+
+    function seleccionarPlaca(valor, id) {
+        document.getElementById('in_placa_input').value = valor;
+        const hidden = document.getElementById('in_placa_select');
+        hidden.value = valor;
+        hidden.dataset.id = id;
+        ocultarListaPlacas();
+    }
+
+    function ocultarListaPlacas() {
+        document.getElementById('in_placa_lista').classList.add('hidden');
+    }
+
+    function guardarNuevaPlacaDesdeTexto() {
+        const val = document.getElementById('in_placa_input').value.trim().toUpperCase();
+        if (!val) return;
         db.ref('placas_personalizadas').push({ placa: val });
+        document.getElementById('in_placa_input').value = val;
         document.getElementById('in_placa_select').value = val;
-        document.getElementById('in_placa_manual').value = '';
-        document.getElementById('nuevaPlacaContainer').classList.add('hidden');
+        ocultarListaPlacas();
     }
 
-    function toggleTransporteManual() {
-        const sel = document.getElementById('in_trans_select').value === 'OTRO';
-        document.getElementById('nuevoTransporteContainer').classList.toggle('hidden', !sel);
-    }
-    function togglePlacaManual() {
-        const sel = document.getElementById('in_placa_select').value === 'OTRO';
-        document.getElementById('nuevaPlacaContainer').classList.toggle('hidden', !sel);
+    function eliminarPlacaSeleccionada() {
+        const hidden = document.getElementById('in_placa_select');
+        const id = hidden.dataset.id;
+        if (!id) return alert('Escribe y selecciona una placa de la lista para eliminar');
+        if (!confirm(`¿Eliminar la placa "${hidden.value}" de la lista?`)) return;
+        db.ref('placas_personalizadas/' + id).remove();
+        hidden.value = '';
+        hidden.dataset.id = '';
+        document.getElementById('in_placa_input').value = '';
     }
     function toggleTipoRecepcionManual() {
         const manual = document.getElementById('in_tipo_recepcion_manual');
@@ -517,6 +704,7 @@
         document.getElementById('in_fecha').value = ahora.toISOString().slice(0, 16);
         actualizarSelectTransportes();
         actualizarSelectPlacas();
+        actualizarSelectResponsables();
     })();
 </script>
 </body>
